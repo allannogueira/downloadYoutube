@@ -1,0 +1,60 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<style type="text/css">
+	.feed-item-youtube div{font-size: 10pt;}
+	.feed-item-youtube td:first-child img{ width: 65px; margin-right: 5px}
+	.feed-item-youtube table td:last-child{display: none}/*ultima td da tabela*/
+	.feed-item-youtube table tr:last-child{display: none}/*segunda linha da tabela*/
+	.feed-item-youtube div{border-bottom: 1px solid #CCC;   padding-bottom: 20px; margin: 10px}
+	.feed-item-youtube div div{border:0; margin: 0; padding: 0}
+	.social-feed-youtube{height: 275px;overflow: auto;}
+</style>
+<script>
+$(document).ready(function(){
+	
+	$.ajax({
+	   //coloque o nome do canal e depois acesse no navegador a url abaixo e ela será convertida
+	  //http://www.youtube.com/rss/user/nome_do_canal/videos.rss
+	  
+	  url: "http://gdata.youtube.com/feeds/base/users/3mbrasil/uploads?client=ytapi-youtube-rss-redirect&alt=rss&orderby=updated&v=2"
+	  
+	}).done(function(xml) {
+		var html = "";
+		var pubDate = "";		
+		var description = "";
+		var link = "";
+		
+		//montando logo com link para o canal
+		var url = $(xml).find("url").text(); 
+		var title = $(xml).find("title").text(); 
+		var link = $(xml).find("link").text(); 
+		var htmlLogo = "<div class='logo'>"+
+			"<a href='"+link+"'><img src='"+url+"' title='"+title+"' /></a>"+
+		"</div>";
+		
+		//montando os videos e descricoes
+		var i=0;
+		$(xml).find("item").each(function(){
+			i++;
+			pubDate = $(xml).find("pubDate").text();			
+			description = $(xml).find("description").text(); 
+			link = $(xml).find("title").text(); 
+			
+			html +="<div class='feed-item-youtube item-"+i+"'>"+description+"</div>";
+			
+		});		
+		
+		//colocando no documento
+		$(".social-feed-youtube").html(html);
+		
+		//limpando css
+		$(".feed-item-youtube a").attr("target","_blank");
+		$(".feed-item-youtube div").attr("style","");
+		$(".feed-item-youtube a").attr("style","");
+		$(".feed-item-youtube img").attr("style","");
+		$(".feed-item-youtube td").attr("width","");
+		
+	});
+})
+
+</script>
+<div id="social-feed-youtube" class="social-feed-youtube"></div>
